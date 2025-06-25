@@ -1,0 +1,43 @@
+# 🔄 Forçando GitHub Actions a atualizar
+name: Automação CVM Diária
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # 🔥 A cada 5 minutos (para teste)
+  workflow_dispatch:
+
+jobs:
+  run-cvm-automation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 Checkout do código
+        uses: actions/checkout@v3
+
+      - name: ⚙️ Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 📦 Instalar dependências
+        run: |
+          pip install -r requirements.txt
+
+      - name: 📂 Verificar estrutura de arquivos
+        run: |
+          pwd
+          ls -la
+
+      - name: 🚀 Executar script de automação CVM
+        run: |
+          python automacao_cvm.py
+
+      - name: 💾 Commit e Push do CSV atualizado
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add deb_processadas.csv || echo "Nenhum arquivo para adicionar"
+          git commit -m "Atualiza deb_processadas.csv automático via GitHub Actions" || echo "Nada para commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
