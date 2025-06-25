@@ -1,9 +1,9 @@
+name: Automação CVM Diária
+
 on:
   schedule:
     - cron: '*/5 * * * *' 
   workflow_dispatch:
-  
-name: Automação CVM Diária
 
 permissions:
   contents: write  # 🔑 Necessário para permitir git push
