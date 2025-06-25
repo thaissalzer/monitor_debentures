@@ -1,10 +1,12 @@
-# 🔄 Forçando GitHub Actions a atualizar
 name: Automação CVM Diária
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # 🔥 A cada 5 minutos (para teste)
+    - cron: '0 12 * * *'  # ⏰ Todos os dias às 9h da manhã (horário de Brasília)
   workflow_dispatch:
+
+permissions:
+  contents: write  # 🔑 Necessário para permitir git push
 
 jobs:
   run-cvm-automation:
@@ -36,6 +38,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git add deb_processadas.csv || echo "Nenhum arquivo para adicionar"
           git commit -m "Atualiza deb_processadas.csv automático via GitHub Actions" || echo "Nada para commit"
           git push
